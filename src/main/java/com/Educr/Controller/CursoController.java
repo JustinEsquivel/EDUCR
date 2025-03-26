@@ -19,7 +19,7 @@ public class CursoController {
     private final CursoService cursoService;
     private final UsuarioService usuarioService;
     private final InscripcionesService inscripcionesService;
-
+    
     @Autowired
     public CursoController(CursoService cursoService, 
                          UsuarioService usuarioService, 

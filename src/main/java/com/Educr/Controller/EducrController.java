@@ -1,10 +1,17 @@
 package com.Educr.controller;
 
+
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Optional;
 import jakarta.servlet.http.HttpSession;
 import com.Educr.domain.Rol;
 import com.Educr.domain.Usuario;
+import com.Educr.domain.Curso;
+import com.Educr.domain.Inscripciones;
 import com.Educr.service.UsuarioService;
+import com.Educr.service.CursoService;
+import com.Educr.service.InscripcionesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +22,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class EducrController {
-
+    
+    @Autowired
+    private InscripcionesService inscripcionesService;
+    @Autowired
+    private CursoService cursoService;
     @Autowired
     private UsuarioService usuarioService;
 
@@ -119,10 +130,10 @@ public class EducrController {
     }
     
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/";
-    }
+        public String logout(HttpSession session) {
+            session.invalidate();
+            return "redirect:/login";  // O redirige a la página que prefieras después de cerrar sesión
+        }
 
     // Página principal después de login
     @GetMapping("/dashboard")
@@ -131,7 +142,19 @@ public class EducrController {
         if (usuario == null) {
             return "redirect:/login";
         }
+        // Obtener cursos destacados (podrías implementar lógica para seleccionar los más populares)
+        List<Curso> cursosDestacados = cursoService.listarTodosLosCursos().stream()
+            .limit(3)
+            .collect(Collectors.toList());
+
+        // Obtener inscripciones del usuario
+        List<Inscripciones> inscripciones = inscripcionesService
+            .obtenerInscripcionesPorUsuario(usuario.getIdUsuario());
+
         model.addAttribute("usuario", usuario);
+        model.addAttribute("cursos", cursosDestacados);
+        model.addAttribute("inscripciones", inscripciones);
+
         return "dashboard";
     }
 }
