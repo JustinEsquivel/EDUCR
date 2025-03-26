@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/plantilla}">
+<head>
+    <title>Mi Perfil</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <span class="display-4"><i class="fas fa-user-circle"></i></span>
+                            </div>
+                            <h4 th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></h4>
+                            <p class="text-muted" th:text="${usuario.correo}"></p>
+                            <span class="badge bg-primary" th:text="${usuario.rol.nombre}"></span>
+                            <hr>
+                            <p class="text-muted">
+                                <small>Miembro desde: <span th:text="${#temporals.format(usuario.fechaRegistro, 'dd/MM/yyyy')}"></span></small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Mis Cursos</h5>
+                            <a th:href="@{/cursos}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-plus"></i> Explorar más cursos
+                            </a>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div th:if="${inscripciones.empty}">
+                                <div class="alert alert-info">
+                                    No estás inscrito en ningún curso aún.
+                                </div>
+                                <a th:href="@{/cursos}" class="btn btn-primary">
+                                    <i class="fas fa-book"></i> Explorar cursos disponibles
+                                </a>
+                            </div>
+                            
+                            <div th:unless="${inscripciones.empty}" class="list-group">
+                                <div th:each="inscripcion : ${inscripciones}" class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 th:text="${inscripcion.curso.nombre}"></h6>
+                                            <small class="text-muted" th:text="'Inscrito el: ' + ${#temporals.format(inscripcion.fechaInscripcion, 'dd/MM/yyyy')}"></small>
+                                        </div>
+                                        <a th:href="@{/cursos/{id}(id=${inscripcion.curso.idCurso})}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            Ver curso
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

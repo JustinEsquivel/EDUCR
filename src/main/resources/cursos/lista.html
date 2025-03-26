@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/plantilla}">
+<head>
+    <title>Cursos Disponibles</title>
+    <style>
+        .card-img-top {
+            height: 180px;
+            object-fit: cover;
+        }
+        .badge {
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container mt-4">
+            <h1 class="mb-4">Cursos Disponibles</h1>
+            
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div th:each="curso : ${cursos}" class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${curso.nombre}"></h5>
+                            <p class="card-text text-muted" th:text="${curso.descripcion.length() > 100 ? curso.descripcion.substring(0, 100) + '...' : curso.descripcion}"></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted" th:text="'Creado por: ' + ${curso.creadoPor.nombre}"></small>
+                                <a th:href="@{/cursos/{id}(id=${curso.idCurso})}" class="btn btn-sm btn-outline-primary">Ver detalles</a>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <small class="text-muted" th:text="${#temporals.format(curso.fechaCreacion, 'dd/MM/yyyy')}"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
