@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;  // ✅ IMPORTAR List
+import java.util.List; 
 
 @Controller
 public class UsuarioController {
@@ -22,7 +21,7 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @Autowired
-    private InscripcionesService inscripcionesService; // ✅ INYECTAR InscripcionesService
+    private InscripcionesService inscripcionesService; 
 
     @GetMapping("/perfil")
     public String mostrarPerfil(HttpSession session, Model model) {
@@ -31,9 +30,8 @@ public class UsuarioController {
             return "redirect:/login";
         }
 
-        // Obtener las inscripciones del usuario
         List<Inscripciones> inscripciones = inscripcionesService
-            .obtenerInscripcionesPorUsuario(usuario.getIdUsuario());  // ✅ USAR inscripcionesService
+            .obtenerInscripcionesPorUsuario(usuario.getIdUsuario()); 
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("inscripciones", inscripciones);
@@ -59,7 +57,7 @@ public class UsuarioController {
         usuario.setApellido(apellido);
         usuarioService.actualizarUsuario(usuario);
         
-        // Actualizar el usuario en la sesión
+
         session.setAttribute("usuario", usuario);
         
         redirectAttributes.addFlashAttribute("exito", "Perfil actualizado correctamente");

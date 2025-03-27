@@ -1,6 +1,5 @@
 package com.Educr.controller;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Optional;
@@ -30,13 +29,11 @@ public class EducrController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // Página de inicio (landing page)
     @GetMapping("/")
     public String mostrarInicio() {
         return "index";
     }
 
-    // Página de acceso (login/registro)
     @GetMapping("/acceso")
     public String mostrarAcceso(HttpSession session) {
         // Si ya está logueado, redirigir al dashboard
@@ -75,8 +72,6 @@ public class EducrController {
             usuario.setNombre(nombre);
             usuario.setApellido(apellido);
             usuario.setCorreo(correo);
-            
-            // En un sistema real, aquí deberías hashear la contraseña
             usuario.setContraseña(contraseña);
 
             Rol rol = Rol.valueOf(rolSeleccionado);
@@ -114,7 +109,6 @@ public class EducrController {
             Optional<Usuario> usuarioOpt = usuarioService.obtenerUsuarioPorCorreo(correo);
             
             if (usuarioOpt.isPresent() && usuarioOpt.get().getContraseña().equals(contraseña)) {
-                // Guardar usuario en sesión
                 session.setAttribute("usuario", usuarioOpt.get());
                 // Establecer tiempo de expiración de sesión (30 minutos)
                 session.setMaxInactiveInterval(30 * 60);
@@ -132,22 +126,21 @@ public class EducrController {
     @GetMapping("/logout")
         public String logout(HttpSession session) {
             session.invalidate();
-            return "redirect:/login";  // O redirige a la página que prefieras después de cerrar sesión
+            return "redirect:/login";  
         }
 
-    // Página principal después de login
     @GetMapping("/dashboard")
     public String mostrarDashboard(HttpSession session, Model model) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
             return "redirect:/login";
         }
-        // Obtener cursos destacados (podrías implementar lógica para seleccionar los más populares)
+
         List<Curso> cursosDestacados = cursoService.listarTodosLosCursos().stream()
             .limit(3)
             .collect(Collectors.toList());
 
-        // Obtener inscripciones del usuario
+
         List<Inscripciones> inscripciones = inscripcionesService
             .obtenerInscripcionesPorUsuario(usuario.getIdUsuario());
 

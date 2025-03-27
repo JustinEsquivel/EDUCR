@@ -1,44 +1,142 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>EDUCR - Inicio</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .landing-container {
-            text-align: center;
-            padding: 5rem;
-        }
-        .features {
-            margin: 3rem 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container landing-container">
-        <h1>Bienvenido a EDUCR</h1>
-        <p class="lead">Plataforma de educación en línea</p>
-        
-        <div class="features">
-            <div class="row">
-                <div class="col-md-4">
-                    <h3><i class="fas fa-book"></i> Cursos Variados</h3>
-                    <p>Accede a nuestra amplia variedad de cursos educativos.</p>
+    <head>
+        <meta charset="UTF-8">
+        <title>EDUCR - Plataforma de Educación en Línea</title>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <style>
+            body {
+                background-color: #f8f9fa;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            .hero-section {
+                background: linear-gradient(135deg, #004d00 0%, #28a745 100%);
+                color: white;
+                padding: 6rem 0;
+                text-align: center;
+            }
+            .feature-card {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease;
+                height: 100%;
+                padding: 2rem;
+                background-color: white;
+            }
+            .feature-card:hover {
+                transform: translateY(-10px);
+            }
+            .feature-icon {
+                font-size: 2.5rem;
+                color: #28a745;
+                margin-bottom: 1.5rem;
+            }
+            .btn-cta {
+                background-color: #28a745;
+                border: none;
+                padding: 0.75rem 2rem;
+                font-size: 1.1rem;
+                font-weight: 500;
+            }
+            .btn-cta:hover {
+                background-color: #218838;
+            }
+            .footer {
+                background-color: #343a40;
+                color: white;
+                padding: 2rem 0;
+                text-align: center;
+                margin-top: auto;
+            }
+            .navbar {
+                background-color: #343a40;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header -->
+        <header class="header">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container">
+                    <a th:href="@{/}" class="navbar-brand mb-0 h1">EDUCR</a>
+                    <div class="collapse navbar-collapse">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item px-3">
+                                <a class="nav-link" th:href="@{/cursos}">Cursos</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <h3><i class="fas fa-chalkboard-teacher"></i> Expertos</h3>
-                    <p>Aprende de profesionales con amplia experiencia.</p>
-                </div>
-                <div class="col-md-4">
-                    <h3><i class="fas fa-certificate"></i> Certificados</h3>
-                    <p>Obtén certificados al completar tus cursos.</p>
+            </nav>
+        </header>
+
+        <section class="hero-section">
+            <div class="container">
+                <h1 class="display-4 fw-bold mb-4">Bienvenido a EDUCR</h1>
+                <p class="lead mb-5">La plataforma de educación en línea que transforma tu aprendizaje</p>
+                <a href="/acceso" class="btn btn-light btn-lg btn-cta">
+                    <i class="fas fa-door-open me-2"></i>Acceder a la Plataforma
+                </a>
+            </div>
+        </section>
+
+        <section class="py-5 my-5">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-card text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h3>Cursos Variados</h3>
+                            <p class="text-muted">Accede a nuestra amplia variedad de cursos educativos en diferentes áreas del conocimiento.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <h3>Expertos</h3>
+                            <p class="text-muted">Aprende de profesionales con amplia experiencia en sus campos de especialización.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <h3>Certificados</h3>
+                            <p class="text-muted">Obtén certificados reconocidos al completar exitosamente tus cursos.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <a href="/acceso" class="btn btn-primary btn-lg">Acceder</a>
-    </div>
+        </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+        <section class="py-5 bg-light">
+            <div class="container text-center">
+                <h2 class="mb-4">¿Listo para comenzar tu viaje de aprendizaje?</h2>
+                <a href="/registro" class="btn btn-cta btn-lg text-white">
+                    <i class="fas fa-user-plus me-2"></i>Regístrate Gratis
+                </a>
+            </div>
+        </section>
+
+
+        <footer class="bg-dark text-white mt-5 p-4">
+            <div class="container text-center">
+                <p class="lead">© [[#{plantilla.derechos}]]</p>
+            </div>
+        </footer>
+
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    </body>
 </html>
