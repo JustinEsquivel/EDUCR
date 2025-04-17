@@ -65,6 +65,23 @@ public class CursoController {
         
         return "redirect:/cursos";
     }
+    @GetMapping("/{id}/ejercicios")
+    public String verEjerciciosCurso(@PathVariable Integer id,
+                                   HttpSession session,
+                                   Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        Optional<Curso> cursoOpt = cursoService.buscarCursoPorId(id);
+        if (cursoOpt.isEmpty()) {
+            return "redirect:/cursos";
+        }
+
+        model.addAttribute("curso", cursoOpt.get());
+        return "redirect:/ejercicios/curso/" + id;
+    }
 
     @PostMapping("/inscribir/{cursoId}")
     public String inscribirEnCurso(@PathVariable Integer cursoId,

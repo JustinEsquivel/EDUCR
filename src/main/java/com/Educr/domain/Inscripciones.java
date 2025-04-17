@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "inscripciones")
+@Data
 @Getter
 @Setter
 @NoArgsConstructor

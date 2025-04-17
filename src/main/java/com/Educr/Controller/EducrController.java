@@ -1,23 +1,21 @@
 package com.Educr.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.Optional;
+
+import com.Educr.domain.*;
+import com.Educr.service.*;
 import jakarta.servlet.http.HttpSession;
-import com.Educr.domain.Rol;
-import com.Educr.domain.Usuario;
-import com.Educr.domain.Curso;
-import com.Educr.domain.Inscripciones;
-import com.Educr.service.UsuarioService;
-import com.Educr.service.CursoService;
-import com.Educr.service.InscripcionesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.PostMapping;       
+import org.springframework.web.bind.annotation.RequestParam; 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes; 
+import java.util.List;
+import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @Controller
 public class EducrController {
@@ -28,7 +26,8 @@ public class EducrController {
     private CursoService cursoService;
     @Autowired
     private UsuarioService usuarioService;
-
+    @Autowired
+    private CertificadoService certificadoService;
     @GetMapping("/")
     public String mostrarInicio() {
         return "index";
@@ -36,7 +35,6 @@ public class EducrController {
 
     @GetMapping("/acceso")
     public String mostrarAcceso(HttpSession session) {
-        // Si ya está logueado, redirigir al dashboard
         if (session.getAttribute("usuario") != null) {
             return "redirect:/dashboard";
         }
@@ -45,7 +43,6 @@ public class EducrController {
 
     @GetMapping("/registro")
     public String mostrarRegistro(Model model, HttpSession session) {
-        // Si ya está logueado, redirigir al dashboard
         if (session.getAttribute("usuario") != null) {
             return "redirect:/dashboard";
         }
@@ -91,7 +88,6 @@ public class EducrController {
 
     @GetMapping("/login")
     public String mostrarLogin(Model model, HttpSession session) {
-        // Si ya está logueado, redirigir al dashboard
         if (session.getAttribute("usuario") != null) {
             return "redirect:/dashboard";
         }
@@ -130,7 +126,8 @@ public class EducrController {
         }
 
     @GetMapping("/dashboard")
-    public String mostrarDashboard(HttpSession session, Model model) {
+    public String mostrarDashboard(HttpSession session, Model model) 
+    {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
             return "redirect:/login";
@@ -140,14 +137,23 @@ public class EducrController {
             .limit(3)
             .collect(Collectors.toList());
 
-
         List<Inscripciones> inscripciones = inscripcionesService
             .obtenerInscripcionesPorUsuario(usuario.getIdUsuario());
 
+        List<Certificado> certificados = certificadoService
+            .buscarCertificadosPorUsuario(usuario.getIdUsuario());
+
+       
+
+        int ejerciciosCompletados = 2; 
+
         model.addAttribute("usuario", usuario);
-        model.addAttribute("cursos", cursosDestacados);
+        model.addAttribute("cursosDestacados", cursosDestacados);
         model.addAttribute("inscripciones", inscripciones);
+        model.addAttribute("certificados", certificados);
+        model.addAttribute("ejerciciosCompletados", ejerciciosCompletados);
 
         return "dashboard";
     }
+    
 }

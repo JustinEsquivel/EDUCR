@@ -31,7 +31,7 @@ public class CertificadoServiceImpl implements CertificadoService {
 
     @Override
     public boolean existeCertificadoPorUsuarioYCurso(Integer usuarioId, String cursoId) {
-        return certificadoDao.existsByUsuario_IdUsuarioAndCurso_IdCurso(usuarioId, Integer.parseInt(cursoId)); // Convertir cursoId a Integer
+        return certificadoDao.existsByUsuario_IdUsuarioAndCurso_IdCurso(usuarioId, Integer.parseInt(cursoId)); 
     }
 
     @Override

@@ -11,4 +11,6 @@ public interface EjerciciosService {
     Ejercicios crearEjercicio(Ejercicios ejercicio);
     Ejercicios actualizarEjercicio(Ejercicios ejercicio);
     void eliminarEjercicio(Integer id);
+    public Optional<Ejercicios> obtenerEjercicio(Integer idEjercicio);
+
 }

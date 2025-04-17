@@ -1,27 +1,30 @@
 package com.Educr.controller;
 
-import com.Educr.domain.Usuario;
-import com.Educr.domain.Inscripciones;
-import com.Educr.service.UsuarioService;
-import com.Educr.service.InscripcionesService;
+import com.Educr.domain.*;
+import com.Educr.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.util.List; 
+import java.util.List;
 
 @Controller
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
+    private final InscripcionesService inscripcionesService;
+    private final CertificadoService certificadoService;
 
     @Autowired
-    private InscripcionesService inscripcionesService; 
+    public UsuarioController(UsuarioService usuarioService,
+                           InscripcionesService inscripcionesService,
+                           CertificadoService certificadoService) {
+        this.usuarioService = usuarioService;
+        this.inscripcionesService = inscripcionesService;
+        this.certificadoService = certificadoService;
+    }
 
     @GetMapping("/perfil")
     public String mostrarPerfil(HttpSession session, Model model) {
@@ -31,18 +34,24 @@ public class UsuarioController {
         }
 
         List<Inscripciones> inscripciones = inscripcionesService
-            .obtenerInscripcionesPorUsuario(usuario.getIdUsuario()); 
+            .obtenerInscripcionesPorUsuario(usuario.getIdUsuario());
+        
+        List<Certificado> certificados = certificadoService
+            .buscarCertificadosPorUsuario(usuario.getIdUsuario());
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("inscripciones", inscripciones);
+        model.addAttribute("certificados", certificados);
 
         return "perfil";
     }
+
     @GetMapping("/cerrar-sesion")
     public String cerrarSesion(HttpSession session) {
-        session.invalidate();  // Cerrar la sesión
-        return "redirect:/";  // Redirigir a la página principal
+        session.invalidate();
+        return "redirect:/login";  
     }
+
     @PostMapping("/actualizar-perfil")
     public String actualizarPerfil(@RequestParam String nombre,
                                  @RequestParam String apellido,
@@ -57,7 +66,6 @@ public class UsuarioController {
         usuario.setApellido(apellido);
         usuarioService.actualizarUsuario(usuario);
         
-
         session.setAttribute("usuario", usuario);
         
         redirectAttributes.addFlashAttribute("exito", "Perfil actualizado correctamente");

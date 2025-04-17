@@ -6,12 +6,21 @@
         <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
         <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
         <style>
+            :root {
+                --primary-color: #004d00;
+                --secondary-color: #28a745;
+                --dark-color: #343a40;
+                --light-color: #f8f9fa;
+            }
+
             body {
-                background-color: #f8f9fa;
+                background-color: #f5f5f5;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 display: flex;
                 flex-direction: column;
                 min-height: 100vh;
             }
+
             .login-container {
                 flex: 1;
                 display: flex;
@@ -19,36 +28,71 @@
                 justify-content: center;
                 padding: 2rem 0;
             }
-            .card-login {
+
+            .login-card {
                 border: none;
                 border-radius: 10px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
                 width: 100%;
                 max-width: 500px;
+                overflow: hidden;
             }
-            .card-header {
-                background-color: #004d00;
+
+            .login-header {
+                background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
                 color: white;
-                border-radius: 10px 10px 0 0 !important;
-                padding: 1.5rem;
-            }
-            .card-body {
                 padding: 2rem;
+                text-align: center;
             }
-            .btn-login {
-                background-color: #28a745;
-                border: none;
-                padding: 0.5rem 1.5rem;
+
+            .login-body {
+                padding: 2rem;
+                background-color: white;
             }
-            .btn-login:hover {
-                background-color: #218838;
+
+            .login-icon {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                color: white;
             }
+
+            .form-control {
+                padding: 0.75rem 1rem;
+                border-radius: 5px;
+            }
+
             .form-control:focus {
-                border-color: #28a745;
+                border-color: var(--secondary-color);
                 box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
             }
+
+            .btn-login {
+                background-color: var(--secondary-color);
+                border: none;
+                padding: 0.75rem;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+            .btn-login:hover {
+                background-color: #218838;
+                transform: translateY(-2px);
+            }
+
+            .input-icon {
+                position: relative;
+            }
+
+            .input-icon i {
+                position: absolute;
+                right: 15px;
+                top: 42px;
+                color: #6c757d;
+                cursor: pointer;
+            }
+
             .footer {
-                background-color: #343a40;
+                background-color: var(--dark-color);
                 color: white;
                 padding: 1.5rem 0;
                 text-align: center;
@@ -56,30 +100,18 @@
         </style>
     </head>
     <body>
-        <header class="header">
-            <nav class="navbar navbar-expand-lg navbar-dark p-3" style="background-color: #343a40;">
-                <div class="container">
-                    <a th:href="@{/}" class="navbar-brand mb-0 h1">EDUCR</a>
-                    <div class="collapse navbar-collapse">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item px-3">
-                                <a class="nav-link" th:href="@{/cursos}">Cursos</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </header>
-
         <div class="login-container">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-md-8 col-lg-6">
-                        <div class="card card-login">
-                            <div class="card-header text-center">
-                                <h3><i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión</h3>
+                        <div class="card login-card">
+                            <div class="login-header">
+                                <div class="login-icon">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </div>
+                                <h3>Iniciar Sesión</h3>
                             </div>
-                            <div class="card-body">
+                            <div class="login-body">
                                 <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
                                     <span th:text="${error}"></span>
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -94,14 +126,17 @@
                                                id="correo" name="correo" required
                                                placeholder="tucorreo@ejemplo.com">
                                     </div>
-                                    <div class="mb-4">
+
+                                    <div class="mb-4 input-icon">
                                         <label for="contraseña" class="form-label">
                                             <i class="fas fa-lock me-2"></i>Contraseña
                                         </label>
                                         <input type="password" class="form-control form-control-lg" 
                                                id="contraseña" name="contraseña" required
                                                placeholder="Ingresa tu contraseña">
+                                        <i class="fas fa-eye-slash toggle-password"></i>
                                     </div>
+
                                     <div class="d-grid mb-3">
                                         <button type="submit" class="btn btn-login btn-lg">
                                             <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
@@ -122,17 +157,28 @@
             </div>
         </div>
 
-
-        <footer class="bg-dark text-white mt-5 p-4">
+        <footer class="footer">
             <div class="container text-center">
-                <p class="lead">© [[#{plantilla.derechos}]]</p>
+                <p class="mb-0">© 2025 EDUCR. Todos los derechos reservados.</p>
             </div>
         </footer>
-
-
 
         <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
         <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
         <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+        <script>
+            document.querySelector('.toggle-password').addEventListener('click', function () {
+                const passwordInput = document.getElementById('contraseña');
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                } else {
+                    passwordInput.type = 'password';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                }
+            });
+        </script>
     </body>
 </html>

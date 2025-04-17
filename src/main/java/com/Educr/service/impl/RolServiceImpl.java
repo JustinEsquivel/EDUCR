@@ -1,14 +1,13 @@
 package com.Educr.service.impl;
 
 import com.Educr.dao.RolDao;
-import com.Educr.domain.RolEntity;
 import com.Educr.domain.Rol;
+import com.Educr.domain.RolEntity;
 import com.Educr.service.RolService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 

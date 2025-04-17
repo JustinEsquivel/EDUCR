@@ -10,7 +10,7 @@ public interface UsuarioService {
     Optional<Usuario> obtenerUsuarioPorId(Integer id);
     Optional<Usuario> obtenerUsuarioPorCorreo(String correo);
     boolean existeUsuarioPorCorreo(String correo);
-    Usuario crearUsuario(Usuario usuario, Rol rol); // Cambiado para aceptar Rol
+    Usuario crearUsuario(Usuario usuario, Rol rol); 
     Usuario actualizarUsuario(Usuario usuario);
     void eliminarUsuario(Integer id);
 }

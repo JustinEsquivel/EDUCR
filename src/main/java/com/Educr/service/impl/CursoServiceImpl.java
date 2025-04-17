@@ -48,4 +48,8 @@ public class CursoServiceImpl implements CursoService {
     public void eliminarCurso(Integer id) {
         cursoDao.deleteById(id);
     }
+    @Override
+    public Optional<Curso> obtenerCurso(Integer idCurso) {
+        return cursoDao.findById(idCurso);
+    }
 }

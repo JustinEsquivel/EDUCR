@@ -9,9 +9,8 @@ public interface RolDao extends JpaRepository<RolEntity, Integer> {
     // Buscar rol por nombre exacto
     Optional<RolEntity> findByNombre(String nombre);
     
-    // Verificar existencia por nombre
+    // Verifica existencia por nombre
     boolean existsByNombre(String nombre);
     
-    // Buscar rol ignorando mayúsculas/minúsculas
     Optional<RolEntity> findByNombreIgnoreCase(String nombre);
 }

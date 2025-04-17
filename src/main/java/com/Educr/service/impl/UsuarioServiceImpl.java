@@ -3,7 +3,7 @@ package com.Educr.service.impl;
 import com.Educr.dao.UsuarioDao;
 import com.Educr.domain.Usuario;
 import com.Educr.domain.Rol;
-import com.Educr.domain.RolEntity; // Importación añadida
+import com.Educr.domain.RolEntity; 
 import com.Educr.service.UsuarioService;
 import com.Educr.service.RolService;
 import org.springframework.beans.factory.annotation.Autowired;

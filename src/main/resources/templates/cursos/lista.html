@@ -1,84 +1,107 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/plantilla}">
     <head>
-        <title>EDUCR - Todos los Cursos</title>
-        <meta charset="UTF-8"/>
+        <title>Cursos - EDUCR</title>
         <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
         <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
-        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
-        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
         <style>
-            .card-header {
-                background-color: #004d00;
-                color: white;
+            :root {
+                --primary-color: #004d00;
+                --secondary-color: #28a745;
+                --dark-color: #343a40;
+                --light-color: #f8f9fa;
             }
-            .card-body {
-                background-color: #f8f9fa;
+
+            .course-card {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                transition: all 0.3s ease;
+                overflow: hidden;
+                height: 100%;
             }
-            .navbar {
-                background-color: #343a40;
+
+            .course-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             }
-            .btn-custom {
-                background-color: #28a745;
-                color: white;
+
+            .course-img {
+                height: 180px;
+                object-fit: cover;
             }
-            footer {
-                background-color: #343a40;
-                color: white;
+
+            .course-title {
+                font-weight: 600;
+                color: var(--primary-color);
             }
-            .card-footer {
-                background-color: #f8f9fa;
+
+            .course-creator {
+                font-size: 0.9rem;
+                color: #6c757d;
+            }
+
+            .page-header {
+                color: var(--primary-color);
+                font-weight: 700;
+                border-bottom: 3px solid var(--secondary-color);
+                display: inline-block;
+                padding-bottom: 0.5rem;
+            }
+
+            .search-box {
+                position: relative;
+            }
+
+            .search-box .form-control {
+                padding-left: 2.5rem;
+                border-radius: 50px;
+            }
+
+            .search-box i {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #6c757d;
             }
         </style>
     </head>
-    <body style="background-color: #f8f9fa;">
-
-        <!-- Header -->
-        <header th:fragment="header" class="header">
-            <nav class="navbar navbar-expand-lg navbar-dark p-3">
-                <div class="container">
-                    <a th:href="@{/dashboard}" class="navbar-brand mb-0 h1">EDUCR</a>
-                    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarCollapse">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item px-3">
-                                <a class="nav-link" th:href="@{/cursos}">Todos los cursos</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </header>
-
-
+    <body>
         <div layout:fragment="content">
-            <div class="container mt-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1>Todos los cursos</h1>
-                    <a th:href="@{/dashboard}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left"></i> Volver al Dashboard
-                    </a>
+            <div class="container mt-4 mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                    <h1 class="page-header">
+                        <i class="fas fa-book-open me-2"></i> Todos los Cursos
+                    </h1>
+                    <div class="d-flex">
+                        <div class="search-box me-3">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="form-control" placeholder="Buscar cursos...">
+                        </div>
+                        <a th:href="@{/dashboard}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Volver al Dashboard
+                        </a>
+                    </div>
                 </div>
 
                 <div class="row">
-                    <div th:each="curso : ${cursos}" class="col-md-4 mb-4">
-                        <div class="card h-100">
+                    <div th:each="curso : ${cursos}" class="col-md-6 col-lg-4 mb-4">
+                        <div class="card course-card">
+                            <img src="https://images.unsplash.com/photo-1588912914078-2fe5224fd8b8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fENvdXJzZXN8ZW58MHx8MHx8fDA%3D/300x200" class="card-img-top course-img" alt="Imagen de Curso">
                             <div class="card-body">
-                                <h5 class="card-title" th:text="${curso.nombre}"></h5>
-                                <p class="card-text" th:text="${curso.descripcion}"></p>
-                                <p class="text-muted small">
-                                    Creado por: <span th:text="${curso.creadoPor.nombre}"></span>
+                                <h5 class="card-title course-title" th:text="${curso.nombre}"></h5>
+                                <p class="card-text" 
+                                   th:text="${curso.descripcion.length() > 100 ? curso.descripcion.substring(0, 100) + '...' : curso.descripcion}"></p>
+                                <p class="course-creator">
+                                    <i class="fas fa-user-tie me-1"></i>
+                                    <span th:text="${curso.creadoPor.nombre}"></span>
                                 </p>
                             </div>
                             <div class="card-footer bg-transparent">
-                                <a th:href="@{/cursos/{id}(id=${curso.idCurso})}" 
-                                   class="btn btn-primary">
-                                    Ver detalles
+                                <a th:href="@{/cursos/{id}(id=${curso.idCurso})}" class="btn btn-success w-100">
+                                    <i class="fas fa-info-circle me-1"></i> Ver Detalles
                                 </a>
                             </div>
                         </div>
@@ -86,14 +109,5 @@
                 </div>
             </div>
         </div>
-
-
-        <footer class="bg-dark text-white mt-5 p-4">
-            <div class="container text-center">
-                <p class="lead">© [[#{plantilla.derechos}]]</p>
-            </div>
-        </footer>
-
-
     </body>
 </html>

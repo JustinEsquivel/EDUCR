@@ -8,7 +8,7 @@ public interface CertificadoService {
     List<Certificado> listarCertificados();
     Optional<Certificado> buscarCertificadoPorId(Integer id);
     List<Certificado> buscarCertificadosPorUsuario(Integer usuarioId);
-    boolean existeCertificadoPorUsuarioYCurso(Integer usuarioId, String cursoId); // Firma correcta
+    boolean existeCertificadoPorUsuarioYCurso(Integer usuarioId, String cursoId); 
     Certificado guardarCertificado(Certificado certificado);
     Certificado actualizarCertificado(Certificado certificado);
     void eliminarCertificado(Integer id);

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Certificado - EDUCR</title>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <style>
+            :root {
+                --primary-color: #004d00;
+                --secondary-color: #28a745;
+                --dark-color: #343a40;
+                --light-color: #f8f9fa;
+            }
+
+            body {
+                background-color: #f5f5f5;
+                font-family: 'Georgia', serif;
+            }
+
+            .certificate-container {
+                background-color: white;
+                padding: 3rem;
+                max-width: 900px;
+                margin: 2rem auto;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                position: relative;
+                border: 15px solid var(--secondary-color);
+            }
+
+            .certificate-border {
+                border: 2px solid var(--primary-color);
+                padding: 3rem;
+                height: 100%;
+                position: relative;
+            }
+
+            .watermark {
+                position: absolute;
+                opacity: 0.05;
+                font-size: 8rem;
+                transform: rotate(-45deg);
+                z-index: 0;
+                top: 30%;
+                left: 10%;
+                font-weight: bold;
+                color: var(--primary-color);
+            }
+
+            .certificate-header {
+                text-align: center;
+                margin-bottom: 2rem;
+                position: relative;
+                z-index: 1;
+            }
+
+            .certificate-title {
+                color: var(--primary-color);
+                font-size: 2.5rem;
+                font-weight: bold;
+                margin-bottom: 1rem;
+            }
+
+            .certificate-body {
+                text-align: center;
+                margin: 3rem 0;
+                position: relative;
+                z-index: 1;
+            }
+
+            .certificate-body h2 {
+                font-weight: 600;
+                margin-bottom: 1.5rem;
+                color: var(--dark-color);
+            }
+
+            .certificate-body h3 {
+                color: var(--primary-color);
+                margin: 1.5rem 0;
+            }
+
+            .signature-area {
+                margin-top: 4rem;
+                display: flex;
+                justify-content: space-between;
+                position: relative;
+                z-index: 1;
+            }
+
+            .signature-line {
+                border-top: 1px solid var(--dark-color);
+                width: 200px;
+                margin-top: 3rem;
+            }
+
+            .signature-title {
+                font-size: 0.9rem;
+                margin-top: 0.5rem;
+            }
+
+            .certificate-id {
+                font-size: 0.8rem;
+                letter-spacing: 1px;
+            }
+
+            .action-buttons {
+                margin-top: 2rem;
+                text-align: center;
+            }
+
+            @media print {
+                body {
+                    background-color: white !important;
+                }
+
+                .certificate-container {
+                    box-shadow: none;
+                    border: none;
+                    padding: 0;
+                    margin: 0;
+                }
+
+                .no-print {
+                    display: none !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container my-4">
+            <div class="certificate-container">
+                <div class="certificate-border">
+                    <div class="watermark" th:text="#{aplicacion.nombre}"></div>
+
+                    <div class="certificate-header">
+                        <h1 class="certificate-title" th:text="#{certificado.completacion}"></h1>
+                        <p class="lead" th:text="#{certificado.otorgado}"></p>
+                    </div>
+
+                    <div class="certificate-body">
+                        <h2 th:text="${certificado.usuario.nombre + ' ' + certificado.usuario.apellido}"></h2>
+                        <p class="lead" th:text="#{certificado.por.completar}"></p>
+                        <h3 th:text="${certificado.curso.nombre}"></h3>
+                        <p th:text="#{certificado.el.dia} + ' ' + ${#temporals.format(certificado.fechaEmision, 'dd/MM/yyyy')}"></p>
+                    </div>
+
+                    <div class="signature-area">
+                        <div class="text-center">
+                            <div class="signature-line"></div>
+                            <p class="signature-title" th:text="#{certificado.firma.instructor}"></p>
+                        </div>
+                        <div class="text-center">
+                            <div class="signature-line"></div>
+                            <p class="signature-title" th:text="#{certificado.firma.director}"></p>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <small class="text-muted certificate-id" 
+                               th:text="#{certificado.id} + ': ' + ${certificado.id}"></small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons no-print">
+                <button onclick="window.print()" class="btn btn-success me-3">
+                    <i class="fas fa-print me-1"></i> Imprimir
+                </button>
+                <a th:href="@{/certificados/descargar/{id}(id=${certificado.id})}" class="btn btn-primary me-3">
+                    <i class="fas fa-download me-1"></i> Descargar
+                </a>
+                <a th:href="@{/certificados/usuario}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Volver
+                </a>
+            </div>
+        </div>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    </body>
+</html>

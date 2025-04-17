@@ -6,12 +6,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "usuarios")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Usuario {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")

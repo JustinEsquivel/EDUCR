@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "certificados")
+@Data
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,12 +19,11 @@ public class Certificado {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false) // Mapea la columna usuario_id
-    private Usuario usuario; // Relación con Usuario
-
+    @JoinColumn(name = "usuario_id", nullable = false) 
+    private Usuario usuario; 
     @ManyToOne
-    @JoinColumn(name = "curso_id", nullable = false) // Mapea la columna curso_id
-    private Curso curso; // Relación con Curso
+    @JoinColumn(name = "curso_id", nullable = false) 
+    private Curso curso;
 
     @Column(name = "fecha_emision", nullable = false)
     private LocalDateTime fechaEmision = LocalDateTime.now();
