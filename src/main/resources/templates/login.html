@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>EDUCR - Iniciar Sesión</title>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <style>
+            :root {
+                --primary-color: #004d00;
+                --secondary-color: #28a745;
+                --dark-color: #343a40;
+                --light-color: #f8f9fa;
+            }
+
+            body {
+                background-color: #f5f5f5;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            .login-container {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 0;
+            }
+
+            .login-card {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                max-width: 500px;
+                overflow: hidden;
+            }
+
+            .login-header {
+                background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+                color: white;
+                padding: 2rem;
+                text-align: center;
+            }
+
+            .login-body {
+                padding: 2rem;
+                background-color: white;
+            }
+
+            .login-icon {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                color: white;
+            }
+
+            .form-control {
+                padding: 0.75rem 1rem;
+                border-radius: 5px;
+            }
+
+            .form-control:focus {
+                border-color: var(--secondary-color);
+                box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+            }
+
+            .btn-login {
+                background-color: var(--secondary-color);
+                border: none;
+                padding: 0.75rem;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+            .btn-login:hover {
+                background-color: #218838;
+                transform: translateY(-2px);
+            }
+
+            .input-icon {
+                position: relative;
+            }
+
+            .input-icon i {
+                position: absolute;
+                right: 15px;
+                top: 42px;
+                color: #6c757d;
+                cursor: pointer;
+            }
+
+            .footer {
+                background-color: var(--dark-color);
+                color: white;
+                padding: 1.5rem 0;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="login-container">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6">
+                        <div class="card login-card">
+                            <div class="login-header">
+                                <div class="login-icon">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </div>
+                                <h3>Iniciar Sesión</h3>
+                            </div>
+                            <div class="login-body">
+                                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <span th:text="${error}"></span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+
+                                <form th:action="@{/login}" method="post">
+                                    <div class="mb-4">
+                                        <label for="correo" class="form-label">
+                                            <i class="fas fa-envelope me-2"></i>Correo Electrónico
+                                        </label>
+                                        <input type="email" class="form-control form-control-lg" 
+                                               id="correo" name="correo" required
+                                               placeholder="tucorreo@ejemplo.com">
+                                    </div>
+
+                                    <div class="mb-4 input-icon">
+                                        <label for="contraseña" class="form-label">
+                                            <i class="fas fa-lock me-2"></i>Contraseña
+                                        </label>
+                                        <input type="password" class="form-control form-control-lg" 
+                                               id="contraseña" name="contraseña" required
+                                               placeholder="Ingresa tu contraseña">
+                                        <i class="fas fa-eye-slash toggle-password"></i>
+                                    </div>
+
+                                    <div class="d-grid mb-3">
+                                        <button type="submit" class="btn btn-login btn-lg">
+                                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <div class="text-center mt-4">
+                                    <p class="mb-2">¿No tienes una cuenta?</p>
+                                    <a th:href="@{/registro}" class="btn btn-outline-success">
+                                        <i class="fas fa-user-plus me-2"></i>Regístrate aquí
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container text-center">
+                <p class="mb-0">© 2025 EDUCR. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+        <script>
+            document.querySelector('.toggle-password').addEventListener('click', function () {
+                const passwordInput = document.getElementById('contraseña');
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                } else {
+                    passwordInput.type = 'password';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                }
+            });
+        </script>
+    </body>
+</html>

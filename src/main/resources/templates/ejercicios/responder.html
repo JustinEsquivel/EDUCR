@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Responder Ejercicio - EDUCR</title>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <style>
+            :root {
+                --primary-color: #004d00;
+                --secondary-color: #28a745;
+                --dark-color: #343a40;
+                --light-color: #f8f9fa;
+            }
+
+            body {
+                background-color: #f5f5f5;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .navbar {
+                background-color: var(--dark-color);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .exercise-container {
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                padding: 2rem;
+                margin-top: 2rem;
+                max-width: 800px;
+            }
+
+            .question-text {
+                font-size: 1.25rem;
+                font-weight: 500;
+                color: var(--dark-color);
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                border-bottom: 2px solid var(--secondary-color);
+            }
+
+            .option-item {
+                padding: 1rem;
+                margin-bottom: 0.75rem;
+                background-color: white;
+                border: 1px solid #dee2e6;
+                border-radius: 0.5rem;
+                transition: all 0.2s;
+                cursor: pointer;
+            }
+
+            .option-item:hover {
+                background-color: rgba(40, 167, 69, 0.05);
+                border-color: var(--secondary-color);
+            }
+
+            .form-check-input:checked + .form-check-label {
+                font-weight: 500;
+                color: var(--primary-color);
+            }
+
+            .btn-primary-custom {
+                background-color: var(--secondary-color);
+                border: none;
+                font-weight: 500;
+            }
+
+            .btn-primary-custom:hover {
+                background-color: #218838;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+            <div class="container">
+                <a class="navbar-brand" th:href="@{/dashboard}">EDUCR</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cursos}"><i class="fas fa-book me-1"></i> Cursos</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/perfil}">
+                                <i class="fas fa-user-circle me-1"></i> Perfil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/logout}">
+                                <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mb-5">
+            <div class="row justify-content-center">
+                <div class="exercise-container">
+                    <h2 class="text-center mb-4">
+                        <i class="fas fa-question-circle me-2"></i> Responder Ejercicio
+                    </h2>
+
+                    <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
+
+                    <div class="question-text" th:text="${ejercicio.pregunta}"></div>
+
+                    <form th:action="@{/ejercicios/responder/verificar}" method="post">
+                        <input type="hidden" name="id" th:value="${ejercicio.idEjercicio}" />
+
+                        <div class="mb-4">
+                            <div th:each="opcion, iterStat : ${ejercicio.opciones}" class="form-check option-item">
+                                <input class="form-check-input" 
+                                       type="radio" 
+                                       name="respuesta" 
+                                       th:id="${'opcion_' + iterStat.index}"
+                                       th:value="${opcion}" 
+                                       required />
+                                <label class="form-check-label" 
+                                       th:for="${'opcion_' + iterStat.index}" 
+                                       th:text="${opcion}"></label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a th:href="@{/ejercicios/curso/{cursoId}(cursoId=${ejercicio.curso.idCurso})}" 
+                               class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Volver
+                            </a>
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="fas fa-paper-plane me-1"></i> Enviar Respuesta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer class="py-4 bg-dark text-white">
+            <div class="container text-center">
+                <p class="mb-0">© 2025 EDUCR. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    </body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Cursos - EDUCR</title>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <style>
+            :root {
+                --primary-color: #004d00;
+                --secondary-color: #28a745;
+                --dark-color: #343a40;
+                --light-color: #f8f9fa;
+            }
+
+            body {
+                background-color: #f5f5f5;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .navbar {
+                background-color: var(--dark-color);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .navbar-brand {
+                font-weight: 700;
+                color: white !important;
+            }
+
+            .nav-link {
+                color: rgba(255, 255, 255, 0.8) !important;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+            .nav-link:hover {
+                color: white !important;
+            }
+
+            .content-container {
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                padding: 2rem;
+                margin-top: 2rem;
+            }
+
+            .course-title {
+                color: var(--primary-color);
+                border-bottom: 2px solid var(--secondary-color);
+                padding-bottom: 0.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .course-card {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                transition: all 0.3s ease;
+                overflow: hidden;
+                height: 100%;
+            }
+
+            .course-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .course-img {
+                height: 180px;
+                object-fit: cover;
+            }
+
+            .search-box {
+                position: relative;
+            }
+
+            .search-box .form-control {
+                padding-left: 2.5rem;
+                border-radius: 50px;
+            }
+
+            .search-box i {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #6c757d;
+            }
+
+            .action-buttons {
+                display: flex;
+                gap: 0.5rem;
+                margin-top: 1rem;
+            }
+
+            .btn-action {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 3rem;
+                color: #6c757d;
+            }
+
+            .empty-state i {
+                font-size: 4rem;
+                margin-bottom: 1rem;
+                color: #dee2e6;
+            }
+
+            .admin-only {
+                display: none;
+            }
+            
+            .admin-visible .admin-only {
+                display: block;
+            }
+            
+            .admin-visible .admin-inline {
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body th:classappend="${usuario != null && usuario.rol.nombre == 'ADMIN'} ? 'admin-visible'">
+        <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+            <div class="container">
+                <a class="navbar-brand" th:href="@{/dashboard}">EDUCR</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cursos}"><i class="fas fa-book me-1"></i> Cursos</a>
+                        </li>
+                        <!-- Opción solo para ADMIN -->
+                        <li class="nav-item admin-only" th:if="${usuario != null && usuario.rol.nombre == 'ADMIN'}">
+                            <a class="nav-link" href="#"><i class="fas fa-cog me-1"></i> Administración</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/perfil}">
+                                <i class="fas fa-user-circle me-1"></i> Perfil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/logout}">
+                                <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mb-5">
+            <div class="content-container">
+                <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+                    <h1 class="course-title">
+                        <i class="fas fa-book-open me-2"></i> Todos los Cursos
+                    </h1>
+                    <div class="d-flex">
+                        <div class="search-box me-3">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="form-control" placeholder="Buscar cursos..."
+                                   th:value="${param.search}" id="searchInput">
+                        </div>
+                        <!-- Botón Nuevo Curso solo visible para ADMIN -->
+                        <a th:href="@{/cursos/nuevo}" class="btn btn-success me-2 admin-only" 
+                           th:if="${usuario != null && usuario.rol.nombre == 'ADMIN'}">
+                            <i class="fas fa-plus me-1"></i> Nuevo Curso
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div th:each="curso : ${cursos}" class="col-md-6 col-lg-4 mb-4">
+                        <div class="card course-card">
+                            <img src="https://images.unsplash.com/photo-1588912914078-2fe5224fd8b8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fENvdXJzZXN8ZW58MHx8MHx8fDA%3D"
+                                 class="card-img-top course-img" alt="Imagen de Curso">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${curso.nombre}"></h5>
+                                <p class="card-text" th:text="${#strings.abbreviate(curso.descripcion, 100)}"></p>
+                                <p class="text-muted"><i class="fas fa-user-tie me-1"></i> <span th:text="${curso.creadoPor.nombre}"></span></p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a th:href="@{/cursos/{id}(id=${curso.idCurso})}" class="btn btn-success btn-sm">
+                                        <i class="fas fa-info-circle me-1"></i> Ver
+                                    </a>
+                                    <!-- Botones de acción solo para ADMIN -->
+                                    <div class="action-buttons admin-only" 
+                                         th:if="${usuario != null && usuario.rol.nombre == 'ADMIN'}">
+                                        <a th:href="@{/cursos/editar/{id}(id=${curso.idCurso})}" class="btn btn-warning btn-action">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form th:action="@{'/cursos/eliminar/' + ${curso.idCurso}}" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('¿Estás seguro de eliminar este curso?')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estado vacío -->
+                <div th:if="${cursos.empty}" class="empty-state">
+                    <i class="fas fa-book-open"></i>
+                    <h3>No hay cursos disponibles</h3>
+                    <p class="mb-4">Parece que no hay cursos registrados todavía.</p>
+                    <!-- Botón solo visible para ADMIN -->
+                    <a th:href="@{/cursos/nuevo}" class="btn btn-success admin-only" 
+                       th:if="${usuario != null && usuario.rol.nombre == 'ADMIN'}">
+                        <i class="fas fa-plus me-1"></i> Crear primer curso
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer class="py-4 bg-dark text-white">
+            <div class="container text-center">
+                <p class="mb-0">© 2025 EDUCR. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+        <script>
+            $(document).ready(function () {
+                $('#searchInput').on('keyup', function () {
+                    const searchText = $(this).val().toLowerCase();
+                    $('.course-card').each(function () {
+                        const cardText = $(this).text().toLowerCase();
+                        if (cardText.indexOf(searchText) === -1) {
+                            $(this).parent().hide();
+                        } else {
+                            $(this).parent().show();
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

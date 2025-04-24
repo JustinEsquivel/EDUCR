@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Ejercicios del Curso - EDUCR</title>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <style>
+            :root {
+                --primary-color: #004d00;
+                --secondary-color: #28a745;
+                --dark-color: #343a40;
+                --light-color: #f8f9fa;
+            }
+
+            body {
+                background-color: #f5f5f5;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .navbar {
+                background-color: var(--dark-color);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .navbar-brand {
+                font-weight: 700;
+                color: white !important;
+            }
+
+            .nav-link {
+                color: rgba(255, 255, 255, 0.8) !important;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+            .nav-link:hover {
+                color: white !important;
+            }
+
+            .content-container {
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                padding: 2rem;
+                margin-top: 2rem;
+            }
+
+            .btn-primary-custom {
+                background-color: var(--secondary-color);
+                border: none;
+                font-weight: 500;
+            }
+
+            .btn-primary-custom:hover {
+                background-color: #218838;
+            }
+
+            .table-custom {
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            }
+
+            .table-custom thead {
+                background-color: var(--dark-color);
+                color: white;
+            }
+
+            .table-custom th {
+                font-weight: 500;
+            }
+
+            .table-custom tbody tr:hover {
+                background-color: rgba(40, 167, 69, 0.05);
+            }
+
+            .action-btn {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .course-title {
+                color: var(--primary-color);
+                border-bottom: 2px solid var(--secondary-color);
+                padding-bottom: 0.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .admin-visible {
+                display: block;
+            }
+            .student-visible {
+                display: none;
+            }
+        </style>
+    </head>
+    <body th:classappend="${rol == 'ADMIN'} ? 'admin-visible' : (${rol == 'ESTUDIANTE'} ? 'student-visible' : '')">
+        <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+            <div class="container">
+                <a class="navbar-brand" th:href="@{/dashboard}">EDUCR</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cursos}"><i class="fas fa-book me-1"></i> Cursos</a>
+                        </li>
+
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/perfil}">
+                                <i class="fas fa-user-circle me-1"></i> Perfil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/logout}">
+                                <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mb-5">
+            <div class="content-container">
+                <h1 class="course-title">
+                    <i class="fas fa-tasks me-2"></i> Ejercicios del Curso: <span th:text="${curso.nombre}"></span>
+                </h1>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-info-circle me-2 text-muted"></i>
+                        <span class="text-muted" th:text="${ejercicios.size()} + ' ejercicios disponibles'"></span>
+                    </div>
+                    <!-- Botón Nuevo Ejercicio solo para ADMIN -->
+                    <a th:href="@{/ejercicios/nuevo/{cursoId}(cursoId=${curso.idCurso})}" 
+                       class="btn btn-primary-custom admin-only">
+                        <i class="fas fa-plus me-1"></i> Nuevo Ejercicio
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover">
+                        <thead>
+                            <tr>
+                                <th width="60%">Pregunta</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ejercicio : ${ejercicios}">
+                                <td>
+                                    <div class="fw-bold" th:text="${ejercicio.pregunta}"></div>
+                                    <small class="text-muted" th:text="'Opciones: ' + ${ejercicio.opciones.size()}"></small>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <!-- Acciones para ADMIN -->
+                                        <a th:href="@{/ejercicios/editar/{id}(id=${ejercicio.idEjercicio})}" 
+                                           class="btn btn-sm btn-outline-primary action-btn admin-inline">
+                                            <i class="fas fa-edit me-1"></i> Editar
+                                        </a>
+                                        <form th:action="@{/ejercicios/eliminar/{id}(id=${ejercicio.idEjercicio})}" 
+                                              method="post" 
+                                              class="d-inline admin-inline">
+                                            <button type="submit" 
+                                                    class="btn btn-sm btn-outline-danger action-btn"
+                                                    onclick="return confirm('¿Estás seguro de eliminar este ejercicio?')">
+                                                <i class="fas fa-trash-alt me-1"></i> Eliminar
+                                            </button>
+                                        </form>
+
+                                        <!-- Acción para ESTUDIANTE -->
+                                        <a th:href="@{/ejercicios/responder/{id}(id=${ejercicio.idEjercicio})}" 
+                                           class="btn btn-sm btn-primary-custom action-btn student-inline">
+                                            <i class="fas fa-play me-1"></i> Responder
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div th:if="${ejercicios.empty}" class="alert alert-info mt-4">
+                    <i class="fas fa-info-circle me-2"></i> No hay ejercicios disponibles para este curso.
+                    <!-- Mostrar botón solo para ADMIN -->
+                    <div class="mt-2 admin-only">
+                        <a th:href="@{/ejercicios/nuevo/{cursoId}(cursoId=${curso.idCurso})}" 
+                           class="btn btn-primary-custom">
+                            <i class="fas fa-plus me-1"></i> Crear primer ejercicio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="py-4 bg-dark text-white">
+            <div class="container text-center">
+                <p class="mb-0">© 2025 EDUCR. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('form[action*="eliminar"]').forEach(form => {
+                    form.addEventListener('submit', function (e) {
+                        if (!confirm('¿Está seguro que desea eliminar este ejercicio? Esta acción no se puede deshacer.')) {
+                            e.preventDefault();
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

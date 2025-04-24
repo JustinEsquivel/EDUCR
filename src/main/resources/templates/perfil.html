@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title th:text="${usuario.nombre} + ' - Perfil'"></title>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <style>
+            :root {
+                --primary-color: #004d00;
+                --secondary-color: #28a745;
+                --dark-color: #343a40;
+                --light-color: #f8f9fa;
+            }
+
+            body {
+                background-color: #f5f5f5;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .profile-card {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                overflow: hidden;
+            }
+
+            .profile-header {
+                background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+                color: white;
+                padding: 2rem;
+                text-align: center;
+            }
+
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 5px solid white;
+                margin-bottom: 1rem;
+            }
+
+            .profile-body {
+                padding: 2rem;
+                background-color: white;
+            }
+
+            .info-item {
+                margin-bottom: 1rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #eee;
+            }
+
+            .info-label {
+                font-weight: 600;
+                color: var(--dark-color);
+            }
+
+            .info-value {
+                color: #6c757d;
+            }
+
+            .course-card {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                transition: all 0.3s ease;
+                margin-bottom: 1rem;
+            }
+
+            .course-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .certificate-card {
+                border-left: 4px solid var(--secondary-color);
+            }
+
+            .btn-edit {
+                background-color: var(--secondary-color);
+                color: white;
+                border: none;
+                font-weight: 500;
+            }
+
+            .btn-edit:hover {
+                background-color: #218838;
+                color: white;
+            }
+
+            .section-title {
+                color: var(--primary-color);
+                font-weight: 600;
+                border-bottom: 2px solid var(--secondary-color);
+                padding-bottom: 0.5rem;
+                margin-bottom: 1.5rem;
+            }
+        </style>
+    </head>
+    <body>
+        
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+            <div class="container">
+                <a class="navbar-brand" th:href="@{/dashboard}">EDUCR</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cursos}"><i class="fas fa-book me-1"></i> Cursos</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" th:href="@{/perfil}"><i class="fas fa-user-circle me-1"></i> Perfil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/logout}"><i class="fas fa-sign-out-alt me-1"></i> Salir</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mb-5">
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${exito}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="row">
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card profile-card">
+                        <div class="profile-header">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHByb2ZpbGV8ZW58MHx8MHx8fDA%3D/150" class="profile-avatar" alt="Profile">
+                            <h4 th:text="${usuario.nombre + ' ' + usuario.apellido}"></h4>
+                            <span class="badge bg-light text-dark" th:text="${usuario.rol.nombre}"></span>
+                        </div>
+                        <div class="profile-body">
+                            <div class="info-item">
+                                <div class="info-label">Correo Electrónico</div>
+                                <div class="info-value" th:text="${usuario.correo}"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Fecha de Registro</div>
+                                <div class="info-value" th:text="${#temporals.format(usuario.fechaRegistro, 'dd/MM/yyyy')}"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Cursos Inscritos</div>
+                                <div class="info-value" th:text="${inscripciones != null ? inscripciones.size() : 0}"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Certificados</div>
+                                <div class="info-value" th:text="${certificados != null ? certificados.size() : 0}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="col-md-8">
+                    
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h4 class="mb-0"><i class="fas fa-user-edit me-2"></i> Editar Perfil</h4>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/actualizar-perfil}" method="post">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="nombre" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" id="nombre" name="nombre" 
+                                               th:value="${usuario.nombre}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="apellido" class="form-label">Apellido</label>
+                                        <input type="text" class="form-control" id="apellido" name="apellido" 
+                                               th:value="${usuario.apellido}" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-edit">
+                                    <i class="fas fa-save me-1"></i> Guardar Cambios
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h4 class="mb-0"><i class="fas fa-book-open me-2"></i> Mis Cursos</h4>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${inscripciones == null or inscripciones.empty}" class="alert alert-info">
+                                No estás inscrito en ningún curso. <a th:href="@{/cursos}">Explora nuestros cursos</a> para comenzar.
+                            </div>
+
+                            <div th:if="${inscripciones != null and !inscripciones.empty}">
+                                <div th:each="inscripcion : ${inscripciones}" class="card course-card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5 th:text="${inscripcion.curso.nombre}"></h5>
+                                                <small class="text-muted">
+                                                    Inscrito el <span th:text="${#temporals.format(inscripcion.fechaInscripcion, 'dd/MM/yyyy')}"></span>
+                                                </small>
+                                            </div>
+                                            <div>
+                                                <a th:href="@{/cursos/{id}(id=${inscripcion.curso.idCurso})}" 
+                                                   class="btn btn-sm btn-outline-primary me-2">
+                                                    <i class="fas fa-eye"></i> Ver
+                                                </a>
+                                                <form th:action="@{/cursos/cancelar/{id}(id=${inscripcion.curso.idCurso})}" method="post">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="fas fa-times"></i> Cancelar
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card" th:if="${certificados != null and !certificados.empty}">
+                        <div class="card-header bg-white">
+                            <h4 class="mb-0"><i class="fas fa-certificate me-2"></i> Mis Certificados</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div th:each="certificado : ${certificados}" class="col-md-6 mb-3">
+                                    <div class="card certificate-card h-100">
+                                        <div class="card-body">
+                                            <h5 th:text="${certificado.curso.nombre}"></h5>
+                                            <p class="text-muted small mb-2">
+                                                <i class="fas fa-calendar-alt"></i> 
+                                                Emitido el: <span th:text="${#temporals.format(certificado.fechaEmision, 'dd/MM/yyyy')}"></span>
+                                            </p>
+                                        </div>
+                                        <div class="card-footer bg-transparent d-flex justify-content-between">
+                                            <a th:href="@{/certificados/ver/{id}(id=${certificado.id})}" 
+                                               class="btn btn-sm btn-success">
+                                                <i class="fas fa-eye"></i> Ver
+                                            </a>
+                                            <a th:href="@{/certificados/descargar/{id}(id=${certificado.id})}" 
+                                               class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-download"></i> Descargar
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="py-4 bg-dark text-white">
+            <div class="container text-center">
+                <p class="mb-0">© 2025 EDUCR. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    </body>
+</html>

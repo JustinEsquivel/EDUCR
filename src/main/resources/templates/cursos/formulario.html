@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/plantilla}">
+    <head>
+        <title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE" 
+               th:text="${curso.idCurso == null ? 'Nuevo Curso' : 'Editar Curso'}"></title>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <style>
+            :root {
+                --primary-color: #004d00;
+                --secondary-color: #28a745;
+                --dark-color: #343a40;
+                --light-color: #f8f9fa;
+            }
+
+            .form-container {
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                padding: 2rem;
+                margin-top: 2rem;
+            }
+
+            .btn-primary-custom {
+                background-color: var(--secondary-color);
+                border: none;
+                font-weight: 500;
+                padding: 0.5rem 1.5rem;
+            }
+
+            .btn-primary-custom:hover {
+                background-color: #218838;
+            }
+
+            .page-header {
+                color: var(--primary-color);
+                font-weight: 700;
+                border-bottom: 3px solid var(--secondary-color);
+                display: inline-block;
+                padding-bottom: 0.5rem;
+            }
+
+            .is-invalid {
+                border-color: #dc3545;
+            }
+
+            .invalid-feedback {
+                color: #dc3545;
+                display: block;
+            }
+        </style>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            function confirmarCancelar() {
+                const formHasChanges = /*[[${curso.idCurso != null}]]*/ false ?
+                        document.querySelector('form').checkValidity() &&
+                        (document.getElementById('nombre').value !== /*[[${curso.nombre}]]*/ '' ||
+                                document.getElementById('descripcion').value !== /*[[${curso.descripcion}]]*/ '') :
+                        document.querySelector('form').checkValidity();
+
+                if (formHasChanges) {
+                    return confirm('¿Estás seguro de cancelar? Los cambios no se guardarán.');
+                }
+                return true;
+            }
+            /*]]>*/
+        </script>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="container mb-5">
+                <div class="form-container">
+                    <h1 class="page-header mb-4" th:text="${curso.idCurso == null ? 'Crear Nuevo Curso' : 'Editar Curso'}"></h1>
+
+                    <form th:action="${curso.idCurso == null ? '/cursos/guardar' : '/cursos/actualizar/' + curso.idCurso}" 
+                          th:object="${curso}" method="post">
+                        <input type="hidden" th:field="*{idCurso}" />
+                        <input type="hidden" th:field="*{creadoPor.idUsuario}" />
+
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del Curso</label>
+                            <input type="text" class="form-control" id="nombre" 
+                                   th:field="*{nombre}" 
+                                   th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''"
+                                   required minlength="3" maxlength="100"
+                                   placeholder="Ej: Introducción a Spring Boot">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                            <small class="text-muted">Entre 3 y 100 caracteres</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" 
+                                      th:field="*{descripcion}"
+                                      th:classappend="${#fields.hasErrors('descripcion')} ? 'is-invalid' : ''"
+                                      rows="5" required minlength="10"
+                                      placeholder="Describa el contenido y objetivos del curso"></textarea>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+                            <small class="text-muted">Mínimo 10 caracteres</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <div>
+                                <span class="text-muted" th:if="${curso.idCurso != null}">
+                                    <i class="fas fa-info-circle"></i> Creado el: 
+                                    <span th:text="${#temporals.format(curso.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span>
+                                </span>
+                            </div>
+                            <div>
+                                <a th:href="@{/cursos}" class="btn btn-outline-secondary me-2" onclick="return confirmarCancelar()">
+                                    <i class="fas fa-times me-1"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="fas fa-save me-1"></i> 
+                                    <span th:text="${curso.idCurso == null ? 'Crear Curso' : 'Guardar Cambios'}"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+        <script>
+            // Validación del formulario
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.querySelector('form');
+
+                form.addEventListener('submit', function (e) {
+                    let isValid = true;
+
+                    // Validar nombre
+                    const nombre = document.getElementById('nombre');
+                    if (nombre.value.trim().length < 3 || nombre.value.trim().length > 100) {
+                        isValid = false;
+                        if (!nombre.classList.contains('is-invalid')) {
+                            nombre.classList.add('is-invalid');
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'invalid-feedback';
+                            errorDiv.textContent = 'El nombre debe tener entre 3 y 100 caracteres';
+                            nombre.parentNode.appendChild(errorDiv);
+                        }
+                    }
+
+                    // Validar descripción
+                    const descripcion = document.getElementById('descripcion');
+                    if (descripcion.value.trim().length < 10) {
+                        isValid = false;
+                        if (!descripcion.classList.contains('is-invalid')) {
+                            descripcion.classList.add('is-invalid');
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'invalid-feedback';
+                            errorDiv.textContent = 'La descripción debe tener al menos 10 caracteres';
+                            descripcion.parentNode.appendChild(errorDiv);
+                        }
+                    }
+
+                    if (!isValid) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

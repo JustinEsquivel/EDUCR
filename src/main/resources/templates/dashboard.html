@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>EDUCR - Dashboard</title>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <style>
+            :root {
+                --primary-color: #004d00;
+                --secondary-color: #28a745;
+                --dark-color: #343a40;
+                --light-color: #f8f9fa;
+            }
+
+            body {
+                background-color: #f5f5f5;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .navbar {
+                background-color: var(--dark-color);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .navbar-brand {
+                font-weight: 700;
+                color: white !important;
+            }
+
+            .nav-link {
+                color: rgba(255, 255, 255, 0.8) !important;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+            .nav-link:hover {
+                color: white !important;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid rgba(255, 255, 255, 0.8);
+            }
+
+            .welcome-card {
+                background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+                color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }
+
+            .stats-card {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                transition: all 0.3s ease;
+                border-left: 4px solid var(--secondary-color);
+            }
+
+            .stats-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .stats-icon {
+                font-size: 2rem;
+                color: var(--secondary-color);
+                opacity: 0.3;
+            }
+
+            .course-card {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                transition: all 0.3s ease;
+                overflow: hidden;
+            }
+
+            .course-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .course-img {
+                height: 120px;
+                object-fit: cover;
+            }
+
+            .btn-primary-custom {
+                background-color: var(--secondary-color);
+                border: none;
+                font-weight: 500;
+            }
+
+            .btn-primary-custom:hover {
+                background-color: #218838;
+            }
+
+            .progress {
+                height: 8px;
+                border-radius: 4px;
+            }
+
+            .progress-bar {
+                background-color: var(--secondary-color);
+            }
+
+            .certificate-badge {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background-color: #ffc107;
+                color: #212529;
+                font-weight: 600;
+            }
+
+            footer {
+                background-color: var(--dark-color);
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+            <div class="container">
+                <a class="navbar-brand" href="#">EDUCR</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cursos}"><i class="fas fa-book me-1"></i> Cursos</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/perfil}">
+                                <i class="fas fa-user-circle me-1"></i> Perfil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/logout}">
+                                <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="container mb-5">
+            <div class="card welcome-card mb-4">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-3">¡Bienvenido de nuevo, <span th:text="${usuario.nombre}"></span>!</h2>
+                            <p class="mb-0">Continúa tu aprendizaje y alcanza tus metas educativas.</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-user-graduate fa-5x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                    <div class="card stats-card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="text-muted">Cursos Inscritos</h6>
+                                    <h3 th:text="${inscripciones != null ? inscripciones.size() : 0}">0</h3>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-book stats-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card stats-card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="text-muted">Ejercicios Completados</h6>
+                                    <h3 th:text="${ejerciciosCompletados != null ? ejerciciosCompletados : 0}">0</h3>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle stats-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card stats-card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="text-muted">Certificados</h6>
+                                    <h3 th:text="${certificados != null ? certificados.size() : 0}">0</h3>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-certificate stats-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="fas fa-book-open me-2"></i> Cursos Inscritos </h4>
+                        <a th:href="@{/cursos}" class="btn btn-sm btn-primary-custom">
+                            <i class="fas fa-plus me-1"></i> Explorar Cursos
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div th:if="${inscripciones == null or inscripciones.empty}" class="alert alert-info">
+                        No estás inscrito en ningún curso. <a th:href="@{/cursos}">Explora nuestros cursos</a> para comenzar.
+                    </div>
+
+                    <div th:if="${inscripciones != null and !inscripciones.empty}">
+                        <div class="row">
+                            <div th:each="inscripcion : ${inscripciones}" class="col-md-6 mb-4">
+                                <div class="card course-card h-100">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <img src="https://images.unsplash.com/photo-1588912914078-2fe5224fd8b8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fENvdXJzZXN8ZW58MHx8MHx8fDA%3D/300x200" class="img-fluid rounded course-img" alt="Imagen de Curso">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h5 th:text="${inscripcion.curso.nombre}"></h5>
+                                                <p class="text-muted mb-2" th:text="${inscripcion.curso.descripcion.length() > 100 ? inscripcion.curso.descripcion.substring(0, 100) + '...' : inscripcion.curso.descripcion}"></p>
+
+                                                <div class="d-flex justify-content-between">
+                                                    <a th:href="@{/cursos/{id}(id=${inscripcion.curso.idCurso})}" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-play me-1"></i> Continuar
+                                                    </a>
+                                                    <a th:href="@{/ejercicios/curso/{id}(id=${inscripcion.curso.idCurso})}" 
+                                                       class="btn btn-sm btn-outline-success">
+                                                        <i class="fas fa-tasks me-1"></i> Ejercicios
+                                                    </a>
+                                                    <a th:if="${certificadosPorCurso != null and certificadosPorCurso.get(inscripcion.curso.idCurso)}" 
+                                                       th:href="@{/certificados/ver/{id}(id=${certificadosPorCurso.get(inscripcion.curso.idCurso).id})}" 
+                                                       class="btn btn-sm btn-warning position-relative">
+                                                        <i class="fas fa-certificate me-1"></i> Certificado
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                            !
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4" th:if="${cursosDestacados != null and !cursosDestacados.empty}">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0"><i class="fas fa-star me-2"></i> Cursos Destacados</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div th:each="curso : ${cursosDestacados}" class="col-md-4 mb-4">
+                            <div class="card course-card h-100">
+                                <img src="https://images.unsplash.com/photo-1588912914078-2fe5224fd8b8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fENvdXJzZXN8ZW58MHx8MHx8fDA%3D/300x200" class="card-img-top" alt="Imagen de Curso">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${curso.nombre}"></h5>
+                                    <p class="card-text text-muted" 
+                                       th:text="${curso.descripcion.length() > 100 ? curso.descripcion.substring(0, 100) + '...' : curso.descripcion}"></p>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <a th:href="@{/cursos/{id}(id=${curso.idCurso})}" class="btn btn-primary-custom btn-sm">
+                                        Ver Detalles
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="py-4 bg-dark text-white">
+            <div class="container text-center">
+                <p class="mb-0">© 2025 EDUCR. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    </body>
+</html>

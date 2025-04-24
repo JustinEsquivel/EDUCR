@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title th:text="${ejercicio.idEjercicio == null ? 'Nuevo Ejercicio' : 'Editar Ejercicio'}"></title>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <style>
+            :root {
+                --primary-color: #004d00;
+                --secondary-color: #28a745;
+                --dark-color: #343a40;
+                --light-color: #f8f9fa;
+            }
+
+            body {
+                background-color: #f5f5f5;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .navbar {
+                background-color: var(--dark-color);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .navbar-brand {
+                font-weight: 700;
+                color: white !important;
+            }
+
+            .nav-link {
+                color: rgba(255, 255, 255, 0.8) !important;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+            .nav-link:hover {
+                color: white !important;
+            }
+
+            .form-container {
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                padding: 2rem;
+                margin-top: 2rem;
+            }
+
+            .btn-primary-custom {
+                background-color: var(--secondary-color);
+                border: none;
+                font-weight: 500;
+            }
+
+            .btn-primary-custom:hover {
+                background-color: #218838;
+            }
+
+            .opcion-item {
+                transition: all 0.3s ease;
+            }
+
+            .opcion-item:hover {
+                background-color: rgba(40, 167, 69, 0.05);
+            }
+
+            .modal-header {
+                background-color: var(--dark-color);
+                color: white;
+            }
+
+            .modal-header .btn-close {
+                filter: invert(1);
+            }
+        </style>
+    </head>
+    <body>
+        
+        <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+            <div class="container">
+                <a class="navbar-brand" th:href="@{/dashboard}">EDUCR</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cursos}"><i class="fas fa-book me-1"></i> Cursos</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/perfil}">
+                                <i class="fas fa-user-circle me-1"></i> Perfil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/logout}">
+                                <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mb-5">
+            <div class="form-container">
+                <h2 class="mb-4" th:text="${ejercicio.idEjercicio == null ? 'Crear Ejercicio' : 'Editar Ejercicio'}"></h2>
+
+                <div class="modal fade" id="opcionModal" tabindex="-1" aria-labelledby="opcionModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="opcionModalLabel">Agregar Nueva Opción</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="nuevaOpcion" class="form-label">Texto de la opción:</label>
+                                    <input type="text" class="form-control" id="nuevaOpcion" placeholder="Ingrese el texto de la opción">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary-custom" onclick="confirmarOpcion()">
+                                    <i class="fas fa-plus me-1"></i> Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form th:action="@{/ejercicios/guardar/{cursoId}(cursoId=${curso.idCurso})}" 
+                      th:object="${ejercicio}" 
+                      method="post">
+
+                    <input type="hidden" th:field="*{idEjercicio}" />
+
+                    <div class="mb-4">
+                        <label for="pregunta" class="form-label">Pregunta:</label>
+                        <textarea th:field="*{pregunta}" class="form-control" id="pregunta" rows="3" 
+                                  placeholder="Ingrese la pregunta del ejercicio" required></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="respuestaCorrecta" class="form-label">Respuesta Correcta:</label>
+                        <select th:field="*{respuestaCorrecta}" class="form-select" id="respuestaCorrecta" required>
+                            <option value="">Seleccione la respuesta correcta</option>
+                            <option th:each="opcion, iterStat : *{opciones}" 
+                                    th:value="${opcion}" 
+                                    th:text="${opcion}"></option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <label class="form-label mb-0">Opciones de Respuesta:</label>
+                            <button type="button" class="btn btn-primary-custom btn-sm" data-bs-toggle="modal" data-bs-target="#opcionModal">
+                                <i class="fas fa-plus me-1"></i> Agregar Opción
+                            </button>
+                        </div>
+
+                        <div id="opcionesContainer" class="border rounded p-3">
+                            <div th:each="opcion, iterStat : *{opciones}" class="input-group mb-2 opcion-item">
+                                <input type="text" th:field="*{opciones[__${iterStat.index}__]}" 
+                                       class="form-control opcion-input" required
+                                       placeholder="Opción de respuesta">
+                                <button type="button" class="btn btn-outline-danger" 
+                                        th:if="${iterStat.index > 0}" 
+                                        onclick="eliminarOpcion(this)">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <a th:href="@{/ejercicios/curso/{cursoId}(cursoId=${curso.idCurso})}" 
+                           class="btn btn-outline-secondary me-2">
+                            <i class="fas fa-times me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="fas fa-save me-1"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <footer class="py-4 bg-dark text-white">
+            <div class="container text-center">
+                <p class="mb-0">© 2025 EDUCR. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+        <script>
+            // Función para agregar nueva opción desde el modal
+            function confirmarOpcion() {
+                const nuevaOpcion = document.getElementById('nuevaOpcion').value.trim();
+                if (nuevaOpcion) {
+                    agregarOpcion(nuevaOpcion);
+                    // Cerrar el modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('opcionModal'));
+                    modal.hide();
+                    // Limpiar el input
+                    document.getElementById('nuevaOpcion').value = '';
+                } else {
+                    // Mostrar alerta si el campo está vacío
+                    alert('Por favor ingrese el texto de la opción');
+                }
+            }
+
+            // Función para agregar una opción al formulario
+            function agregarOpcion(textoOpcion) {
+                const container = document.getElementById('opcionesContainer');
+                const opcionCount = document.querySelectorAll('.opcion-input').length;
+
+                const div = document.createElement('div');
+                div.className = 'input-group mb-2 opcion-item';
+
+                div.innerHTML = `
+                    <input type="text" name="opciones[${opcionCount}]" 
+                           class="form-control opcion-input" 
+                           value="${textoOpcion}" required
+                           placeholder="Opción de respuesta">
+                    <button type="button" class="btn btn-outline-danger" onclick="eliminarOpcion(this)">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                `;
+
+                container.appendChild(div);
+
+                // Actualizar el select de respuesta correcta
+                actualizarSelectRespuestas();
+            }
+
+            // Función para eliminar una opción
+            function eliminarOpcion(boton) {
+                const opcionDiv = boton.parentElement;
+                const input = opcionDiv.querySelector('.opcion-input');
+                const valorEliminado = input.value;
+
+                // Confirmar antes de eliminar
+                if (confirm(`¿Está seguro que desea eliminar la opción "${valorEliminado}"?`)) {
+                    opcionDiv.remove();
+
+                    // Reindexar las opciones restantes
+                    const inputs = document.querySelectorAll('.opcion-input');
+                    inputs.forEach((input, index) => {
+                        input.name = `opciones[${index}]`;
+                    });
+
+                    // Actualizar el select de respuesta correcta
+                    actualizarSelectRespuestas();
+                }
+            }
+
+            // Función para actualizar el select de respuesta correcta
+            function actualizarSelectRespuestas() {
+                const select = document.getElementById('respuestaCorrecta');
+                const selectedValue = select.value;
+
+                // Limpiar opciones excepto la primera
+                while (select.options.length > 1) {
+                    select.remove(1);
+                }
+
+                // Agregar las opciones actuales
+                document.querySelectorAll('.opcion-input').forEach(input => {
+                    const option = document.createElement('option');
+                    option.value = input.value;
+                    option.text = input.value;
+                    select.add(option);
+                });
+
+                // Restaurar la selección anterior si aún existe
+                if (selectedValue && Array.from(select.options).some(opt => opt.value === selectedValue)) {
+                    select.value = selectedValue;
+                } else if (select.options.length > 1) {
+                    // Seleccionar la primera opción si la selección anterior ya no existe
+                    select.selectedIndex = 1;
+                } else {
+                    // No hay opciones, seleccionar el placeholder
+                    select.selectedIndex = 0;
+                }
+            }
+
+            // Inicializar el select al cargar la página
+            document.addEventListener('DOMContentLoaded', function () {
+                actualizarSelectRespuestas();
+
+                // Agregar validación al formulario
+                document.querySelector('form').addEventListener('submit', function (e) {
+                    const opciones = document.querySelectorAll('.opcion-input');
+                    if (opciones.length < 2) {
+                        e.preventDefault();
+                        alert('Debe agregar al menos dos opciones de respuesta');
+                        return false;
+                    }
+
+                    const respuestaCorrecta = document.getElementById('respuestaCorrecta').value;
+                    if (!respuestaCorrecta) {
+                        e.preventDefault();
+                        alert('Debe seleccionar una respuesta correcta');
+                        return false;
+                    }
+
+                    return true;
+                });
+            });
+        </script>
+    </body>
+</html>

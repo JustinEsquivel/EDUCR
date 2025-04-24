@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${title}">EDUCR</title>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+    <th:block th:replace="${styles}"/>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <header class="header">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container">
+                    <a th:href="@{/}" class="navbar-brand mb-0 h1">
+                        <i class="fas fa-graduation-cap me-2"></i>EDUCR
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item px-3">
+                                <a class="nav-link" th:href="@{/cursos}">Todos los cursos</a>
+                            </li>
+                            <li class="nav-item px-3">
+                                <a class="nav-link" href="#">Nosotros</a>
+                            </li>
+                            <li class="nav-item px-3">
+                                <a class="nav-link" href="#">Contacto</a>
+                            </li>
+                        </ul>
+                        <div class="d-flex">
+                            <a href="/acceso" class="btn btn-outline-light me-2">
+                                <i class="fas fa-sign-in-alt me-1"></i> Ingresar
+                            </a>
+                            <a href="/registro" class="btn btn-success">
+                                <i class="fas fa-user-plus me-1"></i> Registrarse
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="content" th:insert="${content}">
+        </main>
+
+        <footer class="bg-dark text-white mt-5 p-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <h5 class="mb-3"><i class="fas fa-graduation-cap me-2"></i>EDUCR</h5>
+                        <p>La plataforma de educación en línea que transforma tu aprendizaje.</p>
+                    </div>
+                    <div class="col-md-2 mb-4 mb-md-0">
+                        <h5 class="mb-3">Enlaces</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="/cursos" class="text-white">Cursos</a></li>
+                            <li class="mb-2"><a href="#" class="text-white">Nosotros</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="mb-3">Contacto</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-envelope me-2"></i>info@educr.com</li>
+                            <li><i class="fas fa-map-marker-alt me-2"></i>San José, Costa Rica</li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-4 bg-light opacity-25">
+                <div class="text-center">
+                    <p class="mb-0">© [[#{plantilla.derechos}]] - Todos los derechos reservados</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <th:block th:replace="${scripts}"/>
+</body>
+</html>
